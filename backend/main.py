@@ -1,25 +1,24 @@
-from fastapi import FastAPI,Request,Form,Depends,BackgroundTasks
+from fastapi import FastAPI, Form, BackgroundTasks
 from modules.email_send import send_otp
-from fastapi.security import OAuth2PasswordBearer
 from redis import Redis
-redis_=Redis(host="localhost",port=6379,decode_responses=True)
 
-app=FastAPI()
+app = FastAPI()
+redis_ = Redis(host="localhost", port=6379, decode_responses=True)
 
-async def otp_gen(email):
-    otp=await send_otp(email)
-    redis_.setex("otp",60,str(otp))
+async def otp_gen(email: str):
+    otp = await send_otp(email)
+    if otp:
+        redis_.setex(f"otp:{email}", 300, str(otp))
 
 @app.post("/")
-async def get_user(background  :BackgroundTasks,email:str=Form(...)):
-    background.add_task(otp_gen,email)
-    return {"otp":redis_.get("otp")}
+async def get_user(background_tasks: BackgroundTasks, email: str = Form(...)):
+    background_tasks.add_task(otp_gen, email)
+    return {"status": "OTP task scheduled"}
 
 @app.post("/reg")
-async def register(otp:str):
-    prev_otp=redis_.get("otp")
-    print(prev_otp)
-    if prev_otp==otp:
-        print("login")
+async def register(email: str = Form(...), otp: str = Form(...)):
+    prev_otp = redis_.get(f"otp:{email}")
+    if prev_otp == otp:
+        return {"status": "login"}
     else:
-        print("otp missmatch")
+        return {"status": "otp mismatch"}
