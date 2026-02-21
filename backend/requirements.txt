@@ -9,3 +9,4 @@ aiosmtplib
 dotenv
 python-multipart
 redis
+upstash_redis
