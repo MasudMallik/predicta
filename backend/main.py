@@ -10,13 +10,13 @@ app = FastAPI()
 redis_ = Redis(url=os.getenv("redis_url"),token=os.getenv("redis_token"))
 
 async def otp_gen(email: str):
-    otp = await send_otp(email)
+    otp =await  send_otp(email)
     if otp:
         redis_.setex(f"otp:{email}", 300, str(otp))
 
 @app.post("/")
 async def get_user(background_tasks: BackgroundTasks, email: str = Form(...)):
-    background_tasks.add_task(otp_gen, email)
+    await send_otp(email)
     return {"status": "OTP task scheduled"}
 
 @app.post("/reg")
