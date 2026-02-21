@@ -13,6 +13,7 @@ async def otp_gen(email):
 @app.post("/")
 async def get_user(background  :BackgroundTasks,email:str=Form(...)):
     background.add_task(otp_gen,email)
+    return {"otp":redis_.get("otp")}
 
 @app.post("/reg")
 async def register(otp:str):
