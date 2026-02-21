@@ -1,9 +1,13 @@
 from fastapi import FastAPI, Form, BackgroundTasks
-from modules.email_send import send_otp
-from redis import Redis
+from backend.modules.email_send import send_otp
+from upstash_redis import Redis
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
 
 app = FastAPI()
-redis_ = Redis(host="localhost", port=6379, decode_responses=True)
+redis_ = Redis(url=os.getenv("redis_url"),token=os.getenv("redis_token"))
 
 async def otp_gen(email: str):
     otp = await send_otp(email)
@@ -18,6 +22,7 @@ async def get_user(background_tasks: BackgroundTasks, email: str = Form(...)):
 @app.post("/reg")
 async def register(email: str = Form(...), otp: str = Form(...)):
     prev_otp = redis_.get(f"otp:{email}")
+    print(prev_otp)
     if prev_otp == otp:
         return {"status": "login"}
     else:
