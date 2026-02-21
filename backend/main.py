@@ -5,8 +5,8 @@ from redis import Redis
 app = FastAPI()
 redis_ = Redis(host="localhost", port=6379, decode_responses=True)
 
-async def otp_gen(email: str):
-    otp = await send_otp(email)
+def otp_gen(email: str):
+    otp = send_otp(email)
     if otp:
         redis_.setex(f"otp:{email}", 300, str(otp))
 
