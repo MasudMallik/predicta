@@ -1,5 +1,5 @@
 from fastapi import FastAPI,Request,Form,Depends,BackgroundTasks
-from backend.modules.email_send import send_otp
+from modules.email_send import send_otp
 from fastapi.security import OAuth2PasswordBearer
 from redis import Redis
 redis_=Redis(host="localhost",port=6379,decode_responses=True)
