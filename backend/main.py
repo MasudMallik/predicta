@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Form, BackgroundTasks
-from backend.modules.email_send import send_otp
+from modules.email_send import send_otp
 from upstash_redis import Redis
 from dotenv import load_dotenv
 import os
