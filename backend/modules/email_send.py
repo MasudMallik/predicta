@@ -1,32 +1,35 @@
-import asyncio
-import random
 import aiosmtplib
 from email.message import EmailMessage
+import random
 from dotenv import load_dotenv
 import os
 load_dotenv()
-async def send_message(email:str):
-    code=random.randint(100000,999999)
+
+async def send_otp(email:str):
     message=EmailMessage()
     message["From"]=os.getenv("name")
     message["To"]=email
-    message["Subject"]="Predicta Verification Code"
-    message.set_content(f"Welcome to Predicta,Your one-time verification code is: {code}This code expires after 5 minutes.Do not share this otp with any one.")
+    message["Subject"]="Predicta verification code"
+    r=random.randint(000000,999999)
+    message.set_content(f"""Hello,
+
+            Welcome to Predicta! To complete your verification, please use the following one-time password (OTP):
+
+            🔑 Your OTP: {r}
+
+            This code will expire in 5 minutes. For your security, do not share this code with anyone.
+
+            If you did not request this verification, please ignore this message.
+
+            Thank you,
+            The Predicta Team
+            """)
     await aiosmtplib.send(
         message,
         hostname=os.getenv("hostname"),
         port=587,
-        start_tls=True,
         username=os.getenv("name"),
+        start_tls=True,
         password=os.getenv("password")
     )
-    return code
-    
-
-def send_otp(email:str):
-    try:
-        code=asyncio.run(send_message(email))
-    except Exception:
-        print("message not sent")
-    else:
-        print("message succesfully send: ",code)
+    return r

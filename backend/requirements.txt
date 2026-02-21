@@ -7,3 +7,5 @@ bcrypt
 pymongo
 aiosmtplib
 dotenv
+python-multipart
+redis
