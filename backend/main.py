@@ -12,7 +12,7 @@ async def otp_gen(email: str):
 
 @app.post("/")
 async def get_user(background_tasks: BackgroundTasks, email: str = Form(...)):
-    background_tasks.add_task(otp_gen, email)
+    await send_otp(enail)
     return {"status": "OTP task scheduled"}
 
 @app.post("/reg")
