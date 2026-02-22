@@ -28,7 +28,6 @@ async def send_otp(email:str):
         await aiosmtplib.send(
             message,
             hostname=os.getenv("hostname"),
-            port=587,
             username=os.getenv("name"),
             use_tls=True,
             password=os.getenv("password")
