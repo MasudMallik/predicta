@@ -19,7 +19,8 @@ async def otp_gen(email: str):
 @app.post("/")
 async def get_user(background_tasks: BackgroundTasks, email: str = Form(...)):
     background_tasks.add_task(otp_gen,email)
-    return {"status": "OTP task scheduled"}
+    ot=redis_.get(f"otp:{email}")
+    return {"status": f"OTP task scheduled and otp{ot}"}
 
 @app.post("/reg")
 async def register(email: str = Form(...), otp: str = Form(...)):

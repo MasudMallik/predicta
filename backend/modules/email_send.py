@@ -11,7 +11,8 @@ async def send_otp(email:str):
     message["To"]=email
     message["Subject"]="Predicta verification code"
     r=random.randint(000000,999999)
-    message.set_content(f"""Hello,
+    try:
+        message.set_content(f"""Hello,
 
             Welcome to Predicta! To complete your verification, please use the following one-time password (OTP):
 
@@ -24,12 +25,15 @@ async def send_otp(email:str):
             Thank you,
             The Predicta Team
             """)
-    await aiosmtplib.send(
-        message,
-        hostname=os.getenv("hostname"),
-        port=465,
-        username=os.getenv("name"),
-        use_tls=True,
-        password=os.getenv("password")
-    )
-    return r
+        await aiosmtplib.send(
+            message,
+            hostname=os.getenv("hostname"),
+            port=587,
+            username=os.getenv("name"),
+            use_tls=True,
+            password=os.getenv("password")
+        )
+    except Exception:
+        return 0
+    else:
+        return r
