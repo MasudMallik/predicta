@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Form, BackgroundTasks
-from modules.email_send import send_otp
+from backend.modules.email_send import send_otp
+from backend.modules.hashed_password import hashed_password,check_password
+from backend.modules.token_create import create_token,decode_token
+from backend.modules.validations import login,register
 from upstash_redis import Redis
 from dotenv import load_dotenv
+from pymongo import MongoClient
 import os
 
-
+client=MongoClient(os.getenv("mongodb"))
 
 load_dotenv()
 
@@ -27,7 +31,8 @@ async def get_user(background_task:BackgroundTasks, email: str = Form(...)):
 
 
 @app.post("/reg")
-async def register(email: str = Form(...), otp: str = Form(...)):
+async def register(data:register):
+
     prev_otp = redis_.get(f"otp:{email}")
     print(prev_otp)
     if prev_otp == otp:

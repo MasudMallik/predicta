@@ -10,7 +10,7 @@ async def send_otp(email:str):
     message["From"]=os.getenv("name")
     message["To"]=email
     message["Subject"]="Predicta verification code"
-    r=random.randint(000000,999999)
+    r=random.randint(100000,999999)
     try:
         message.set_content(f"""Hello,
 
@@ -33,6 +33,6 @@ async def send_otp(email:str):
             password=os.getenv("password")
         )
     except Exception:
-        return 0
+        return None
     else:
         return r
